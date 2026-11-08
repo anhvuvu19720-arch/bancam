@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Violet — Cửa hàng</title>
+<style>
+:root{
+  --bg:#faf8ff;--surface:#ffffff;--text:#1e1433;--muted:#6b6185;--line:#e8e1f7;
+  --p1:#7c3aed;--p2:#a78bfa;--p3:#ede9fe;--btn-text:#ffffff;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#130c24;--surface:#1c1233;--text:#f3eeff;--muted:#a99ec7;--line:#2e2150;--p1:#8b5cf6;--p2:#a78bfa;--p3:#2a1b4d;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#130c24;--surface:#1c1233;--text:#f3eeff;--muted:#a99ec7;--line:#2e2150;--p1:#8b5cf6;--p2:#a78bfa;--p3:#2a1b4d;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.5px;color:var(--p1)}
+.cart{display:flex;align-items:center;gap:8px;background:var(--p3);color:var(--p1);border:0;border-radius:999px;padding:8px 16px;font-weight:600;font-size:15px;cursor:pointer}
+.cart b{background:var(--p1);color:var(--btn-text);border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;font-size:13px;padding:0 6px}
+.hero{padding:72px 0 56px}
+.hero .box{background:linear-gradient(135deg,#6d28d9,#8b5cf6);border-radius:28px;padding:64px 48px;color:#fff;position:relative;overflow:hidden}
+.hero .box::after{content:"";position:absolute;right:-80px;top:-80px;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.14)}
+.hero .box::before{content:"";position:absolute;right:120px;bottom:-120px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.1)}
+.hero h1{font-size:clamp(34px,6vw,60px);line-height:1.08;letter-spacing:-1.5px;max-width:520px;position:relative;z-index:1}
+.hero a{display:inline-block;margin-top:28px;background:#fff;color:#6d28d9;font-weight:700;text-decoration:none;padding:14px 28px;border-radius:999px;position:relative;z-index:1}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--text);padding:9px 18px;border-radius:999px;font-size:15px;cursor:pointer;font-family:inherit}
+.chip.on{background:var(--p1);color:var(--btn-text);border-color:var(--p1)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px;padding-bottom:80px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(124,58,237,.16)}
+.pic{aspect-ratio:1/1;background:var(--p3);overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.info{padding:18px}
+.info h3{font-size:17px;font-weight:600}
+.row{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.price{font-weight:800;font-size:18px;color:var(--p1)}
+.add{background:var(--p1);color:var(--btn-text);border:0;border-radius:999px;width:40px;height:40px;font-size:22px;cursor:pointer;line-height:1}
+.add:active{transform:scale(.92)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:14px;text-align:center}
+@media (max-width:560px){.hero{padding:32px 0}.hero .box{padding:40px 26px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="logo">violet</div><button class="cart" aria-label="Giỏ hàng">Giỏ hàng <b id="n">0</b></button></div></header>
+
+<section class="hero"><div class="wrap"><div class="box">
+<h1>Chọn món bạn thích.</h1>
+<a href="#sp">Xem sản phẩm</a>
+</div></div></section>
+
+<main class="wrap" id="sp">
+<div class="bar" id="bar"></div>
+<div class="grid" id="grid"></div>
+</main>
+
+<footer>© 2026 Violet</footer>
+
+<script>
+const P=[
+ {n:"Tai nghe không dây",p:1890000,c:"Âm thanh",i:"images/tai-nghe.jpg"},
+ {n:"Loa mini",p:990000,c:"Âm thanh",i:"images/loa-mini.jpg"},
+ {n:"Đồng hồ thông minh",p:3290000,c:"Đeo tay",i:"images/dong-ho.jpg"},
+ {n:"Vòng đeo tay",p:690000,c:"Đeo tay",i:"images/vong-tay.jpg"},
+ {n:"Bàn phím cơ",p:1590000,c:"Phụ kiện",i:"images/ban-phim.jpg"},
+ {n:"Chuột không dây",p:490000,c:"Phụ kiện",i:"images/chuot.jpg"},
+ {n:"Sạc nhanh 65W",p:420000,c:"Phụ kiện",i:"images/sac-nhanh.jpg"},
+ {n:"Đèn bàn LED",p:750000,c:"Phụ kiện",i:"images/den-ban.jpg"}
+];
+const cats=["Tất cả",...new Set(P.map(x=>x.c))];
+const fmt=v=>v.toLocaleString("vi-VN")+"₫";
+let cur="Tất cả",count=0;
+const bar=document.getElementById("bar"),grid=document.getElementById("grid"),n=document.getElementById("n");
+function draw(){
+ bar.innerHTML=cats.map(c=>`<button class="chip ${c===cur?"on":""}" data-c="${c}">${c}</button>`).join("");
+ grid.innerHTML=P.filter(x=>cur==="Tất cả"||x.c===cur).map(x=>`
+  <article class="card">
+   <div class="pic">${x.i?`<img src="${x.i}" alt="${x.n}" loading="lazy" onerror="this.remove()">`:""}</div>
+   <div class="info"><h3>${x.n}</h3>
+    <div class="row"><span class="price">${fmt(x.p)}</span><button class="add" aria-label="Thêm vào giỏ">+</button></div>
+   </div>
+  </article>`).join("");
+}
+bar.addEventListener("click",e=>{const c=e.target.dataset.c;if(c){cur=c;draw()}});
+grid.addEventListener("click",e=>{if(e.target.classList.contains("add")){n.textContent=++count}});
+draw();
+</script>
+</body>
+</html>
